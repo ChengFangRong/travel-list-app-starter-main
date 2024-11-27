@@ -1,12 +1,5 @@
 import React, {useState} from "react";
 
-
-// Initial packing items
-const initialItems = [
-  { id: 1, description: "Shirt", quantity: 5, packed: true },
-  { id: 2, description: "Pants", quantity: 2, packed: false },
-];
-
 function Logo() {
   return <h1>My Travel List</h1>;
 }
@@ -76,38 +69,60 @@ function Form({handleAddItem}) {
 
 function Item({description, quantity, packed}) {
 
-  if (packed == true) {
+  if (packed === true) {
     return (<li style = {{textDecoration: "line-through"}}>{description}({quantity})</li>)
-  } else {
+  } 
+  if (packed === false) {
     return (<li>{description}({quantity})</li>);
   };
 
-
 }
 
-function PackingList({ items }) {
+function PackingList({ items , handleDeleteItem , handleUpdateItem}) {
+
+
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
+          <li>
+          <input type='checkbox' checked={item.packed} onChange={() => handleUpdateItem(item.id)}></input>
           <Item
             key={item.id}
             description={item.description}
             quantity={item.quantity}
             packed={item.packed}
           />
+          
+          <button onClick={() => handleDeleteItem(item.id)}>&#128025;</button>
+          </li>
         ))}
       </ul>
     </div>
   );
 }
 
-function Stats() {
-  return (
+function Stats({items}) {
+
+  let length = items.length;
+  let packed = items.filter((item) => item.packed === true).length;
+  let total = packed/length
+
+  if (length !== packed) {
+    return (
     <footer className="stats">
-      <em>You have X items in the list. You already packed Y (Z%).</em>
+      <em>You have {length} items in the list. You already packed {packed} ({total.toFixed(2)} %).</em>
     </footer>
+    );
+  } else {
+    return (
+      <footer className="stats">
+        <em>You got everything!</em>
+      </footer>
   );
+}
+
+
 }
 
 function App() {
@@ -122,12 +137,26 @@ function App() {
   };
 
 
+  function handleDeleteItem(itemId) {
+    setItems((prev) => 
+      prev.filter((item) => item.id !== itemId)
+    );
+  };
+
+  function handleUpdateItem(itemId) {
+    setItems((prev) => 
+      prev.map((item) => item.id === itemId ? {...item, packed: !item.packed} : item) // !item.pack --> it toggles between true and false instead of setting vale to true only when clicked
+      
+    )
+  };
+
+
   return (
     <div className="app">
       <Logo />
       <Form handleAddItem={handleAddItem}/>
-      <PackingList items={items}/>
-      <Stats />
+      <PackingList items={items} handleDeleteItem={handleDeleteItem} handleUpdateItem={handleUpdateItem}/>
+      <Stats items={items}/>
     </div>
   );
 }
