@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 
+
+const bannedItems = [ "water bottle" , "knife", "batteries", "battery","medicine", "sparklers", "alcohol"]
+
 function Logo() {
   return <h1>My Travel List</h1>;
 }
@@ -15,18 +18,32 @@ function Form({handleAddItem}) {
 
 
   function handleSubmit(e) {
+
+
+
     e.preventDefault();
-    setDescription(e.target.value);
 
-    const newItem = {                       // idk :C
-      id: Date.now(),
-      description,
-      quantity,
-      packed: false
-    };
+    const bannedItem = bannedItems.find((i) => i === description);
 
-    handleAddItem(newItem);
-    return (setDescription(""), setQuantity(1));
+    if (bannedItem){
+      alert("This item is banned");
+      return;
+    }
+
+
+    else {
+      setDescription(e.target.value);
+
+      const newItem = {                       // idk :C
+        id: Date.now(),
+        description,
+        quantity,
+        packed: false
+      };
+
+      handleAddItem(newItem);
+      return (setDescription(""), setQuantity(1));
+    }
   };
 
 
@@ -106,7 +123,7 @@ function Stats({items}) {
 
   let length = items.length;
   let packed = items.filter((item) => item.packed === true).length;
-  let total = packed/length
+  let total = (packed/length) * 100;
 
   if (length !== packed) {
     return (
