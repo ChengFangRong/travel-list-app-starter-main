@@ -57,7 +57,7 @@ function Form({handleAddItem}) {
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
-      <h3>What do you need to pack?</h3>
+      <h3>What do you need to pack? (with banned items)</h3>
 
       <select value={quantity} id="quantity" onChange={(e) => setQuantity(Number(e.target.value))}>
 
